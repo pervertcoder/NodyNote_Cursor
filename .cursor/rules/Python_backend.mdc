@@ -1,0 +1,11 @@
+---
+description: NodyNote_Cursor專案通用協作規則
+alwaysApply: true
+---
+# NodyNote_Cursor 專案
+
+- 回覆使用繁體中文，不要用簡體中文(除非使用者要求使用英文)
+- 不要commit / push，除非使用者明確要求
+- 不要提交`.env` 或金鑰
+- 優先讀 `README.md`、`app.py` 再改碼
+- 只改與任務相關的檔案，避免無關大重構
