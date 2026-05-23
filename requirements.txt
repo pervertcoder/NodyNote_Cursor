@@ -1,0 +1,12 @@
+# Web framework & server
+fastapi>=0.110
+uvicorn[standard]>=0.27
+
+# Database (MySQL)
+mysql-connector-python>=8.3
+
+# Config (.env)
+python-dotenv>=1.0
+
+# Password hashing (spec: Session auth, bcrypt)
+bcrypt>=4.1
