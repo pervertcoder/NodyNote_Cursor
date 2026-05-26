@@ -2,7 +2,7 @@
 
 對應 [spec.md](spec.md) 第 8 節（Session 驗證）與協作筆記功能。
 
-**修訂：** 2026-05-23（`users.color`；ID 欄位改 `INT UNSIGNED`）
+**修訂：** 2026-05-26（`users.email`）；2026-05-23（`users.color`；ID 欄位改 `INT UNSIGNED`）
 
 ---
 
@@ -66,17 +66,18 @@ API 路由若呼叫同步 DB，建議使用 `def` 路由，避免在 `async def`
 |------|------|------|------|
 | `id` | `INT UNSIGNED` | PK, AUTO_INCREMENT | |
 | `username` | `VARCHAR(64)` | NOT NULL, UNIQUE | 登入帳號 |
+| `email` | `VARCHAR(255)` | NOT NULL, UNIQUE | 聯絡／註冊用信箱 |
 | `password_hash` | `VARCHAR(255)` | NOT NULL | bcrypt，不存明文 |
 | `color` | `VARCHAR(7)` | NOT NULL, DEFAULT `'#000000'` | 使用者代表色，Hex；預設黑色 |
 | `created_at` | `DATETIME` | NOT NULL, DEFAULT CURRENT_TIMESTAMP | |
 
-**索引：** `PRIMARY KEY (id)`、`UNIQUE KEY uk_users_username (username)`
+**索引：** `PRIMARY KEY (id)`、`UNIQUE KEY uk_users_username (username)`、`UNIQUE KEY uk_users_email (email)`
 
 **說明：**
 
-- 註冊：`INSERT users`，password 先 bcrypt 再寫入 `password_hash`；未指定 `color` 時由資料庫預設 `#000000`（黑）
-- 登入：`SELECT` 依 `username` 取列，比對 `password_hash`
-- `GET /api/user/me` 可回傳 `color`，供頭像、協作成員列表等 UI 辨識
+- 註冊：`INSERT users`（含 `username`、`email`），password 先 bcrypt 再寫入 `password_hash`；未指定 `color` 時由資料庫預設 `#000000`（黑）
+- 登入：`SELECT` 依 `username` 取列，比對 `password_hash`（不以 `email` 登入）
+- `GET /api/user/me` 可回傳 `username`、`email`、`color`，供頭像、協作成員列表等 UI 辨識
 
 ### 3.2 `sessions`（登入 Session）
 
@@ -156,14 +157,17 @@ API 路由若呼叫同步 DB，建議使用 `def` 路由，避免在 `async def`
 CREATE TABLE users (
   id INT UNSIGNED NOT NULL AUTO_INCREMENT,
   username VARCHAR(64) NOT NULL,
+  email VARCHAR(255) NOT NULL,
   password_hash VARCHAR(255) NOT NULL,
   color VARCHAR(7) NOT NULL DEFAULT '#000000',
   created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (id),
-  UNIQUE KEY uk_users_username (username)
+  UNIQUE KEY uk_users_username (username),
+  UNIQUE KEY uk_users_email (email)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- 若 users 表已存在，可改用：
+-- ALTER TABLE users ADD COLUMN email VARCHAR(255) NOT NULL AFTER username, ADD UNIQUE KEY uk_users_email (email);
 -- ALTER TABLE users ADD COLUMN color VARCHAR(7) NOT NULL DEFAULT '#000000' AFTER password_hash;
 
 CREATE TABLE sessions (
@@ -263,7 +267,7 @@ LIMIT 1;
 
 ## 7. 待產品確認（實作前可再改）
 
-- [ ] 登入帳號欄位是否固定為 `username`（或改 `email`）
+- [x] 登入帳號欄位固定為 `username`；`email` 僅註冊／個人資料用
 - [ ] 刪除使用者時：`notes` RESTRICT 或 CASCADE
 - [ ] Session 有效期限（例如 7 天、30 天）
 - [ ] 是否需軟刪除 notes（`deleted_at`）
