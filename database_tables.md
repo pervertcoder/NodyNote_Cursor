@@ -2,7 +2,7 @@
 
 對應 [spec.md](spec.md) 第 8 節（Session 驗證）與協作筆記功能。
 
-**修訂：** 2026-05-26（`users.email`）；2026-05-23（`users.color`；ID 欄位改 `INT UNSIGNED`）
+**修訂：** 2026-05-27（登入改 `email`）；2026-05-26（`users.email`）；2026-05-23（`users.color`；ID 欄位改 `INT UNSIGNED`）
 
 ---
 
@@ -65,8 +65,8 @@ API 路由若呼叫同步 DB，建議使用 `def` 路由，避免在 `async def`
 | 欄位 | 型別 | 約束 | 說明 |
 |------|------|------|------|
 | `id` | `INT UNSIGNED` | PK, AUTO_INCREMENT | |
-| `username` | `VARCHAR(64)` | NOT NULL, UNIQUE | 登入帳號 |
-| `email` | `VARCHAR(255)` | NOT NULL, UNIQUE | 聯絡／註冊用信箱 |
+| `username` | `VARCHAR(64)` | NOT NULL, UNIQUE | 顯示名稱／辨識用（註冊必填） |
+| `email` | `VARCHAR(255)` | NOT NULL, UNIQUE | **登入帳號**（亦用於註冊） |
 | `password_hash` | `VARCHAR(255)` | NOT NULL | bcrypt，不存明文 |
 | `color` | `VARCHAR(7)` | NOT NULL, DEFAULT `'#000000'` | 使用者代表色，Hex；預設黑色 |
 | `created_at` | `DATETIME` | NOT NULL, DEFAULT CURRENT_TIMESTAMP | |
@@ -76,7 +76,7 @@ API 路由若呼叫同步 DB，建議使用 `def` 路由，避免在 `async def`
 **說明：**
 
 - 註冊：`INSERT users`（含 `username`、`email`），password 先 bcrypt 再寫入 `password_hash`；未指定 `color` 時由資料庫預設 `#000000`（黑）
-- 登入：`SELECT` 依 `username` 取列，比對 `password_hash`（不以 `email` 登入）
+- 登入：`SELECT` 依 `email` 取列，以 `bcrypt.checkpw` 比對 `password_hash`（不以 `username` 登入）
 - `GET /api/user/me` 可回傳 `username`、`email`、`color`，供頭像、協作成員列表等 UI 辨識
 
 ### 3.2 `sessions`（登入 Session）
@@ -267,7 +267,7 @@ LIMIT 1;
 
 ## 7. 待產品確認（實作前可再改）
 
-- [x] 登入帳號欄位固定為 `username`；`email` 僅註冊／個人資料用
+- [x] 登入帳號欄位固定為 **`email`**；`username` 僅註冊／顯示／協作辨識用
 - [ ] 刪除使用者時：`notes` RESTRICT 或 CASCADE
 - [ ] Session 有效期限（例如 7 天、30 天）
 - [ ] 是否需軟刪除 notes（`deleted_at`）

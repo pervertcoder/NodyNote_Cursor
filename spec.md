@@ -133,7 +133,8 @@ NodyNote_Cursor/
 | 項目 | 約定 |
 |------|------|
 | 誰算已登入 | 僅後端：Cookie 內 `session_id` 能在 `sessions` 表查到且未過期 |
-| 密碼 | 只存 **hash**（如 bcrypt），註冊／登入時比對 hash，不回傳明文 |
+| 密碼 | 只存 **hash**（如 bcrypt）；註冊時 `hashpw` 寫入，登入時 `checkpw(明文, password_hash)` 比對，不回傳明文 |
+| 登入識別 | 以 **`email`** 查 `users`；`username` 僅註冊與顯示用 |
 | Session ID | 登入成功後以 `secrets` 產生足夠長的隨機字串，**不**在 JSON body 回傳給前端自行儲存 |
 | 授權邊界 | `/api/overview`、`/api/note` 等需登入的端點一律掛 `Depends`；HTML 頁路由可不驗證，但資料仍由 API 擋住 |
 | 敏感設定 | `SECRET_KEY` 等放 `.env`，不提交版控 |
@@ -169,7 +170,7 @@ NodyNote_Cursor/
 
 | 表 | 主要欄位 | 說明 |
 |----|----------|------|
-| `users` | `id`, `username`, `email`, `password_hash`, `color`, `created_at` | 使用者帳號；登入仍以 `username` 為準 |
+| `users` | `id`, `username`, `email`, `password_hash`, `color`, `created_at` | 使用者帳號；**登入以 `email` 為準**，`username` 為顯示／辨識用 |
 | `sessions` | `session_id`, `user_id`, `expires_at`, … | 可選：`created_at`、`user_agent` 供除錯／裝置列表 |
 
 **多裝置**：預設**允許**同一帳號多筆 session 並存（手機、電腦各一 Cookie）。若日後改為「單一登入」，在登入成功時刪除該 `user_id` 其餘 session 即可，仍用同一套 Session 機制。
@@ -216,7 +217,7 @@ WebSocket 為**另一條連線**，「先 REST 拉筆記再開 WS」僅為使用
 | 方法 | 路徑 | 需登入 | 說明 |
 |------|------|--------|------|
 | POST | `/api/user/register` | 否 | 註冊（body：`username`、`email`、`password`；可選 `color`） |
-| POST | `/api/user/login` | 否 | 登入，Set-Cookie |
+| POST | `/api/user/login` | 否 | 登入（body：`email`、`password`），Set-Cookie |
 | POST | `/api/user/logout` | 是 | 登出，Clear-Cookie |
 | GET | `/api/user/me` | 是 | 回傳目前使用者公開資訊 |
 
@@ -262,4 +263,5 @@ WebSocket 為**另一條連線**，「先 REST 拉筆記再開 WS」僅為使用
 | 2026-05-23 | 初版：依現有架構撰寫 |
 | 2026-05-23 | 命名統一：`view` → `overview`、`router` → `routers`、`login_regist_page` → `login_registpage`、URL `/login&regist` → `/login_regist` |
 | 2026-05-23 | 新增第 8 節：Session + HttpOnly Cookie + Depends 身分驗證；章節 9–12 順延 |
-| 2026-05-26 | `users` 新增 `email`（`VARCHAR(255)` NOT NULL UNIQUE）；登入仍用 `username` |
+| 2026-05-26 | `users` 新增 `email`（`VARCHAR(255)` NOT NULL UNIQUE） |
+| 2026-05-27 | 登入改以 **`email`** 為準（`username` 僅註冊／顯示） |

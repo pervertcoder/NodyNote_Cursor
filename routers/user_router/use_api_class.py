@@ -12,3 +12,12 @@ class RegisterResponse(BaseModel):
     id: int
     username: str
     email: str
+
+
+class LoginBody(BaseModel):
+    email: str = Field(min_length=1, max_length=255)
+    password: str = Field(min_length=1)
+
+
+class LoginResponse(BaseModel):
+    message: str

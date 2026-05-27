@@ -39,3 +39,21 @@ def insert_user(username: str, email: str, password_hash: str, color: str | None
     finally:
         cur.close()
         conn.close()
+
+
+def get_user_by_email(email: str) -> dict | None:
+    conn = get_connection()
+    cur = conn.cursor(dictionary=True)
+    try:
+        sql = """
+        SELECT id, username, email, password_hash, color, created_at
+        FROM users
+        WHERE email = %s
+        LIMIT 1
+        """
+        param = (email,)
+        cur.execute(sql, param)
+        return cur.fetchone()
+    finally:
+        cur.close()
+        conn.close()
