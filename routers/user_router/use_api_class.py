@@ -1,3 +1,4 @@
+from datetime import datetime
 from pydantic import BaseModel, Field
 
 
@@ -21,3 +22,11 @@ class LoginBody(BaseModel):
 
 class LoginResponse(BaseModel):
     message: str
+
+
+class MeResponse(BaseModel):
+    id: int
+    username: str
+    email: str
+    color: str
+    created_at: datetime

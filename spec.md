@@ -149,7 +149,7 @@ NodyNote_Cursor/
 **登入**
 
 1. `POST /api/user/login`：驗證帳密。
-2. 成功：寫入 `sessions`（`session_id` ↔ `user_id`、過期時間等），回應 **`Set-Cookie`**（HttpOnly）。
+2. 成功：先刪除該 `user_id` 的既有 `sessions`（單一登入），再寫入新的 `sessions`（`session_id` ↔ `user_id`、過期時間等），回應 **`Set-Cookie`**（HttpOnly）。
 3. 失敗：401，不發 Cookie。
 
 **後續 API**
@@ -173,7 +173,7 @@ NodyNote_Cursor/
 | `users` | `id`, `username`, `email`, `password_hash`, `color`, `created_at` | 使用者帳號；**登入以 `email` 為準**，`username` 為顯示／辨識用 |
 | `sessions` | `session_id`, `user_id`, `expires_at`, … | 可選：`created_at`、`user_agent` 供除錯／裝置列表 |
 
-**多裝置**：預設**允許**同一帳號多筆 session 並存（手機、電腦各一 Cookie）。若日後改為「單一登入」，在登入成功時刪除該 `user_id` 其餘 session 即可，仍用同一套 Session 機制。
+**多裝置**：本專案目前採 **單一登入**。同一帳號若在其他裝置重新登入，會在登入成功時刪除該 `user_id` 既有 sessions，讓舊裝置立即失效（仍用同一套 Session 機制）。
 
 ### 8.4 Cookie 設定
 
@@ -265,3 +265,4 @@ WebSocket 為**另一條連線**，「先 REST 拉筆記再開 WS」僅為使用
 | 2026-05-23 | 新增第 8 節：Session + HttpOnly Cookie + Depends 身分驗證；章節 9–12 順延 |
 | 2026-05-26 | `users` 新增 `email`（`VARCHAR(255)` NOT NULL UNIQUE） |
 | 2026-05-27 | 登入改以 **`email`** 為準（`username` 僅註冊／顯示） |
+| 2026-05-28 | 登入改採單一登入：登入成功時刪除該 `user_id` 既有 sessions |
