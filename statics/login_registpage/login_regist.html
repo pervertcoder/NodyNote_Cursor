@@ -15,77 +15,71 @@
                     <div class="brand-mark" aria-hidden="true"></div>
                     <div class="brand-text">
                         <div class="brand-name">NodyNote</div>
-                        <div class="brand-subtitle">簡單登入 / 註冊面板（純前端）</div>
                     </div>
                 </div>
             </header>
 
+            <input class="auth-tab-radio" type="radio" name="auth_tab" id="tab_login" checked>
+            <input class="auth-tab-radio" type="radio" name="auth_tab" id="tab_register">
+
             <div class="auth-tabs" role="tablist" aria-label="登入與註冊切換">
-                <input class="auth-tab-radio" type="radio" name="auth_tab" id="tab_login" checked>
                 <label class="auth-tab" for="tab_login" role="tab" aria-controls="panel_login">登入</label>
 
-                <input class="auth-tab-radio" type="radio" name="auth_tab" id="tab_register">
                 <label class="auth-tab" for="tab_register" role="tab" aria-controls="panel_register">註冊</label>
             </div>
 
             <div class="auth-panels">
                 <section class="auth-panel" id="panel_login" aria-labelledby="tab_login">
                     <form class="auth-form" action="#" method="post">
+                        <div class="error-login error--off">
+                            <div class="error-message-login"></div>
+                        </div>
                         <div class="field">
-                            <label class="label" for="login_account">帳號 / Email</label>
-                            <input class="input" id="login_account" name="account" type="text" autocomplete="username" placeholder="輸入帳號或 Email">
+                            <label class="label" for="email_login">Email</label>
+                            <input class="input" id="email_login" name="email" type="email" autocomplete="username" placeholder="name@example.com">
                         </div>
 
                         <div class="field">
-                            <label class="label" for="login_password">密碼</label>
-                            <input class="input" id="login_password" name="password" type="password" autocomplete="current-password" placeholder="輸入密碼">
+                            <label class="label" for="password_login">密碼</label>
+                            <input class="input" id="password_login" name="password" type="password" autocomplete="current-password" placeholder="輸入密碼">
                         </div>
 
-                        <div class="row">
-                            <label class="checkbox">
-                                <input type="checkbox" name="remember" value="1">
-                                <span>記住我</span>
-                            </label>
-                            <a class="link" href="#" aria-disabled="true">忘記密碼</a>
-                        </div>
-
-                        <button class="btn primary" type="submit">登入</button>
+                        <button class="btn primary" id="submit_btn" type="button">登入</button>
                         <div class="hint">還沒有帳號？請切到「註冊」頁籤。</div>
                     </form>
                 </section>
 
                 <section class="auth-panel" id="panel_register" aria-labelledby="tab_register">
                     <form class="auth-form" action="#" method="post">
+                        <div class="error-regist error--off">
+                            <div class="error-message-regist"></div>
+                        </div>
                         <div class="field">
-                            <label class="label" for="reg_name">暱稱</label>
-                            <input class="input" id="reg_name" name="name" type="text" autocomplete="nickname" placeholder="你想顯示的名字">
+                            <label class="label" for="name_regist">暱稱</label>
+                            <input class="input" id="name_regist" name="name" type="text" autocomplete="nickname" placeholder="你想顯示的名字">
                         </div>
 
                         <div class="field">
-                            <label class="label" for="reg_email">Email</label>
-                            <input class="input" id="reg_email" name="email" type="email" autocomplete="email" placeholder="name@example.com">
+                            <label class="label" for="email_regist">Email</label>
+                            <input class="input" id="email_regist" name="email" type="email" autocomplete="email" placeholder="name@example.com">
                         </div>
 
                         <div class="field">
-                            <label class="label" for="reg_password">密碼</label>
-                            <input class="input" id="reg_password" name="password" type="password" autocomplete="new-password" placeholder="至少 8 碼（示意）">
+                            <label class="label" for="password_regist">密碼</label>
+                            <input class="input" id="password_regist" name="password" type="password" autocomplete="new-password" placeholder="至少 8 碼（示意）">
                         </div>
 
                         <div class="field">
-                            <label class="label" for="reg_password2">確認密碼</label>
-                            <input class="input" id="reg_password2" name="password2" type="password" autocomplete="new-password" placeholder="再輸入一次">
+                            <label class="label" for="password_regist2">確認密碼</label>
+                            <input class="input" id="password_regist2" name="password2" type="password" autocomplete="new-password" placeholder="再輸入一次">
                         </div>
 
-                        <button class="btn primary" type="submit">建立帳號</button>
+                        <button class="btn primary" id="regist_btn" type="button">建立帳號</button>
                         <div class="hint">已經有帳號？請切到「登入」頁籤。</div>
                     </form>
                 </section>
             </div>
         </section>
-
-        <footer class="auth-footer">
-            <small>此頁僅示意版型，尚未串接後端與驗證流程。</small>
-        </footer>
     </main>
 </body>
 </html>

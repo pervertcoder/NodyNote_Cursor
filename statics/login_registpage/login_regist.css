@@ -103,8 +103,8 @@ body{
   background: rgba(255,255,255,.06);
 }
 
-#tab_login:checked ~ label[for="tab_login"],
-#tab_register:checked ~ label[for="tab_register"]{
+#tab_login:checked ~ .auth-tabs label[for="tab_login"],
+#tab_register:checked ~ .auth-tabs label[for="tab_register"]{
   background: rgba(124,58,237,.18);
   border-color: rgba(124,58,237,.45);
   color: rgba(255,255,255,.95);
@@ -122,6 +122,18 @@ body{
   display:grid;
   gap:12px;
   margin-top:6px;
+}
+
+.error--off{ display:none; }
+.error-login,.error-regist{
+  border:1px solid rgba(255,255,255,.12);
+  background: rgba(255,255,255,.06);
+  border-radius:12px;
+  padding:10px 12px;
+}
+.error-message-login,.error-message-regist{
+  font-size:13px;
+  line-height:1.35;
 }
 
 .field{ display:grid; gap:6px; }
